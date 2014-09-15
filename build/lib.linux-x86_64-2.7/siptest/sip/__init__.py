@@ -1,1 +1,0 @@
-from siptest.sip.sip import SipMessage
