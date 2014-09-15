@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE scenario SYSTEM "sipp.dtd">
+
+<scenario name="Basic SIP Registration">
+  <send retrans="500">
+    <![CDATA[
+
+      REGISTER sip:svyaznoy.ru SIP/2.0
+      Route: <sip:[remote_ip]:[local_port];lr>
+      CSeq: 1 REGISTER
+      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch];rport
+      User-Agent: TestAgent/4.0.1
+      From: <sip:[field0]>;tag=[branch]
+      To: <sip:[field0]>
+      Contact:  <sip:[field2]@[local_ip]:[local_port];transport=tcp>
+      Allow: PRACK, INVITE, ACK, BYE, CANCEL, UPDATE, INFO, SUBSCRIBE, NOTIFY, REFER, MESSAGE, OPTIONS
+      Expires: 3600
+      Call-ID: [call_id]
+      Content-Length: 0
+
+    ]]>
+  </send>
+
+ <recv response="407" auth="true">
+  </recv>
+
+  <send retrans="500">
+    <![CDATA[
+
+      REGISTER sip:svyaznoy.ru SIP/2.0
+      Route: <sip:[remote_ip]:[local_port];lr>
+      CSeq: 1 REGISTER
+      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch];rport
+      User-Agent: TestAgent/4.0.1
+      From: <sip:[field0]>;tag=[branch]
+      To: <sip:[field0]>
+      Contact:  <sip:[field2]@[local_ip]:[local_port];transport=tcp>
+      [field1]
+      Allow: PRACK, INVITE, ACK, BYE, CANCEL, UPDATE, INFO, SUBSCRIBE, NOTIFY, REFER, MESSAGE, OPTIONS
+      Expires: 3600
+      Call-ID: [call_id]
+      Content-Length: 0
+
+    ]]>
+  </send>
+
+  <recv response="200" rtd="true">
+  </recv>
+
+
+</scenario>
+
