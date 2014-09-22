@@ -158,19 +158,6 @@ class Sender(TwistedBaseClient):
                     self.factory.successes += 1
                     self.factory.active_calls -= 1
                     self.transport.loseConnection()
-            if not res.is_request and res.method == "INVITE" and res.status==200:
-                pass
-                # TODO: add ability to answer for 200 ok with SDP for long calls
-                # headers = {}
-                # for header_name in ["Via", "From", "To", "Call-ID",
-                #                    "CSeq", "Contact"]:
-                #     headers[header_name] = res.headers[header_name]
-                # headers["Content-Length"] = "0"
-                # headers["Max-Forwards"] = "70"
-                # method = "ACK"
-                # req = SipMessage(is_request=True, method=method,
-                #                 headers=headers, to=self.factory.to)
-                # self.do_request(req)
             if self.factory.call_connected:
                 return
             if not res.is_request and res.status == 200 \
@@ -230,22 +217,9 @@ class Sender(TwistedBaseClient):
                                  to=self.factory.to)
                 self.factory.log(req, send=True)
                 self.do_request(req)
-                # self.send_deferred(req, 20)
-                # self.send_deferred(req, 20)
                 self.factory.messages["invite_no_auth"] = req
             # send INVITE with digest
             elif res.status == 407 and "INVITE" in res.headers.get("CSeq"):
-                # ACK
-                # headers = {}
-                # for header_name in ["Via", "From", "To", "Call-ID", ]:
-                #     headers[header_name] = res.headers[header_name]
-                # headers["Content-Length"] = "0"
-                # headers["CSeq"] = "3 ACK"
-                # method = "ACK"
-                # req = SipMessage(is_request=True, method=method,
-                #                 headers=headers, to=self.factory.to)
-                # self.do_request(req)
-                #  self.factory.log(res)
                 req = self.factory.messages['invite_no_auth'].copy()
                 client_header = req.gen_auth_header(
                     res.headers.get("Proxy-Authenticate", ""),
@@ -260,13 +234,7 @@ class Sender(TwistedBaseClient):
 class Receiver(TwistedBaseClient):
 
     def connectionMade(self):
-        # self.factory.logger.info("Connection made %s" % self.factory)
-        # self.factory.call_connected = False
-        # self.factory.new_call()
-        # run receivers one by one
         self.register()
-        #delay = self.factory.options.interval * self.factory.num
-        # self.defered_register(self.factory.interval)
 
     def dataReceived(self, data):
         TwistedBaseClient.dataReceived(self, data)
